@@ -2,11 +2,11 @@
 
 log_change()
 {
-    local LOG=/var/log/hostname.log
     printf "%s: %s\n" "$(date)" "${1}" >> ${LOG}
 }
 
 
+LOG=/var/log/hostname.log
 LOGONLY=0
 NSUPDATE_KEY=/var/tmp/nsupdate.key
 STATE=/var/lib/hostname/state
@@ -46,7 +46,14 @@ done
 
 
 
-mkdir -p "$(dirname ${STATE})"
+if [ ! -f "${LOG}" ]; then
+    printf "%s: %s\n\n" "$(date)" "Starting HOSTNAME log" > ${LOG}
+fi
+
+if [ ! -f "${STATE}" ];then
+    mkdir -p "$(dirname ${STATE})"
+    touch ${STATE}
+fi
 
 CURRENT=$(hostname)
 PREVIOUS=$(cat ${STATE} 2>/dev/null)
@@ -61,7 +68,7 @@ else
     if [ "${CURRENT}" != "${PREVIOUS}" ]; then
         log_change "started hostname change from ${PREVIOUS} to ${CURRENT}"
         
-        if [ ${LOGONLY} == 0]; then
+        if [ ${LOGONLY} == 0 ]; then
             hostname-nsupdate.sh -d --host ${PREVIOUS} | nsupdate -k ${NSUPDATE_KEY}
 
             sleep 30
@@ -73,4 +80,4 @@ else
     fi
 fi
 
-printf "%s\n" "${CURRENT}" > ${STATE}
+printf "%s\n" ${CURRENT} > ${STATE}

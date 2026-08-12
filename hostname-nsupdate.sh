@@ -15,6 +15,7 @@ usage() {
         "-d | --delete      Only perform delete action" \
         "-a | --addresses   List of addresses to add" \
         "-h | --help        Display this message" \
+        "-s | --server      Set NSUPDATE_SERVER" \
         "--host             The name of the host" \
         "--key              Key file to update dns" \
         "--url              Destination DNS" \
@@ -26,7 +27,7 @@ HOST=$(hostname)
 NSUPDATE_KEY=~/.ddns/acme-update.key
 NSUPDATE_SERVER=bind9.local
 NSUPDATE_ZONE=local
-OPT=$(getopt -o dha: --long delete,addresses:,help,host:,key:,url:,zone: -n "$0" -- "$@")
+OPT=$(getopt -o dha:s: --long delete,addresses:,help,host:,key:,server:,zone: -n "$0" -- "$@")
 ADDRESSES=$(ip_list)
 
 if [ $? -ne 0 ]; then
@@ -51,16 +52,16 @@ while true; do
             usage
             exit 0
             ;;
+        -s|--server)
+            NSUPDATE_SERVER=$2
+            shift 2
+            ;;
         --host)
             HOST=$2
             shift 2
             ;;
         --key)
             NSUPDATE_KEY=$2
-            shift 2
-            ;;
-        --url)
-            NSUPDATE_SERVER=$2
             shift 2
             ;;
         --zone)
