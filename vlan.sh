@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 ARGS=$(getopt --options dhi: --longoptions delete,help,id: -- "$@")
 

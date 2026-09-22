@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 if test -t 1; then
     ncolors=$(tput colors)

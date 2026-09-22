@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 ip_list() {
     ip -4 -o addr show scope global \
